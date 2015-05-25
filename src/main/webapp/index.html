@@ -8,13 +8,15 @@
     <meta name="description" content="Cavero social calendar">
     <meta name="author" content="KuiperCM">
 
-    <title>Cavero Social Calendar</title>
+    <title>Cavero Kalender</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.css">
 
+    <link rel="stylesheet" href="css/ext/datetimepicker.css">
     <link rel="stylesheet" href="css/socialyearplan.css">
     <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
@@ -30,7 +32,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Sociaal jaarplan</a>
+            <a class="navbar-brand" href="#">Kalender</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
@@ -41,7 +43,84 @@
 </nav>
 
 <div class="container" data-ng-cloak data-ng-controller="calendarController as ctrl">
-    <div ui-calendar class="span8 calendar" ng-model="ctrl.events"></div>
+    <div class="row">
+        <div ui-calendar="ctrl.caveroConfig" class="col-md-8 calendar" data-ng-model="ctrl.events" calendar="caveroCalendar"></div>
+
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <a class="btn btn-primary cav-newactivity-button" data-ng-click="ctrl.createNewActivity()" role="button" data-ng-show="!ctrl.newactivity">Nieuwe activiteit toevoegen</a>
+                </div>
+                <div class="col-md-12" data-ng-show="ctrl.newactivity">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Nieuwe activiteit</div>
+                        <div class="panel-body">
+                            <form name="newactivityform" class="form-horizontal" data-ng-submit="ctrl.submitNewActivity()">
+                                <div class="form-group">
+                                    <label for="eventTitle" class="col-sm-4 control-label">Titel</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="eventTitle" name="title" data-ng-model="ctrl.selectedactivity.title" placeholder="Activiteit titel" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Startdatum</label>
+                                    <datetimepicker class="col-sm-8" data-ng-model="ctrl.selectedactivity.start" show-meridian="false" required></datetimepicker>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Einddatum</label>
+                                    <datetimepicker class="col-sm-8" data-ng-model="ctrl.selectedactivity.end" show-meridian="false" required></datetimepicker>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Beschrijving</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" rows="3" id="eventDescription" name="description" data-ng-model="ctrl.selectedactivity.description" placeholder="Beschrijving"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Locatie</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="eventLocation" name="location" data-ng-model="ctrl.selectedactivity.location" placeholder="Locatie">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-offset-4 col-sm-8">
+                                    <button type="submit" class="btn btn-primary">Opslaan</button>
+                                    <button type="button" class="btn btn-default" data-ng-click="ctrl.abortNewActivity()">Weggooien</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12" data-ng-show="ctrl.selectedactivity.id && !ctrl.newactivity">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Activiteit</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-5">Titel</div>
+                                <div class="col-sm-7">{{ctrl.selectedactivity.title}}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5">Startdatum</div>
+                                <div class="col-sm-7">{{ctrl.selectedactivity.start | date : 'dd-MM-yyyy HH:mm'}}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5">Einddatum</div>
+                                <div class="col-sm-7">{{ctrl.selectedactivity.end | date : 'dd-MM-yyyy HH:mm'}}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5">Beschrijving</div>
+                                <div class="col-sm-7">{{ctrl.selectedactivity.description}}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5">Locatie</div>
+                                <div class="col-sm-7">{{ctrl.selectedactivity.location}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <footer class="footer">
@@ -51,15 +130,19 @@
 </footer>
 
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0-rc.1/angular.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-calendar/1.0.0/calendar.js"></script>
+<script src="js/ext/datetimepicker.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/restangular/1.3.1/restangular.js"></script>
 
 <script src="js/app.js"></script>
 <script src="js/controllers.js"></script>

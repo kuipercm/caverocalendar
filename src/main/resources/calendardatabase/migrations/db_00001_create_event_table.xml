@@ -27,6 +27,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="allDay" type="boolean" />
+            <column name="url" type="varchar(255)" />
             
             <column name="description" type="varchar(max)" />
             <column name="location" type="varchar(max)" />

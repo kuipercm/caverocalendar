@@ -1,6 +1,6 @@
 package nl.cavero.calendar.entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,9 +19,10 @@ public class Event {
 	private long id;
 	
 	private String title;
-	private LocalDateTime start;
-	private LocalDateTime end;
+	private ZonedDateTime start;
+	private ZonedDateTime end;
 	private boolean allDay = false;
+	private String url;
 	
 	private String description;
 	private String location;
