@@ -23,8 +23,6 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
 	public ObjectMapperContextResolver() {
 		mapper = new ObjectMapper();
 		mapper.registerModule(new CustomDateParsingModule());
-//		mapper.registerModule(new JSR310Module());
-//		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
 	}
 	
 	
@@ -47,8 +45,8 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
 	}
 	
 	/**
-	 * The JSR310 deserializer (counterpart to the serializer mentioned above) does a poor job
-	 * when receiving a date from the front-end: it throws an exception with containing timezone data.
+	 * The JSR310 serializer (counterpart to the deserializer mentioned above) does a poor job
+	 * when writing a date to the front-end: the timezone data is messed up and not the standard json format.
 	 */
 	private static class ZonedDateTimeSerializer extends JsonSerializer<ZonedDateTime> {
 		public static final ZonedDateTimeSerializer INSTANCE = new ZonedDateTimeSerializer();

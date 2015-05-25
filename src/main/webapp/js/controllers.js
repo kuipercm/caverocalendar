@@ -6,7 +6,6 @@ angular.module('caveroScControllers', [])
         var eventEndpoint = Restangular.all('event');
 
         self.selectedactivity = {};
-        self.newactivity = false;
 
         self.events = {
             url: 'resources/event',
@@ -19,13 +18,10 @@ angular.module('caveroScControllers', [])
         };
 
         self.handleEventClick = function(event) {
-            console.log('calling the handle click function');
             var eventId = event.id;
 
             eventEndpoint.one('id', eventId).get().then(function(singleEventData) {
-                console.log('success callback from rest call for event');
                 self.selectedactivity = singleEventData;
-                self.newactivity = false;
             });
 
             //returning false so the default window.open doesn't get called
@@ -39,23 +35,52 @@ angular.module('caveroScControllers', [])
         };
 
         self.createNewActivity = function() {
-            self.newactivity = true;
+            var start = new Date();
+            start.setHours(start.getHours() + 1);
+            start.setMinutes(0);
+            start.setSeconds(0);
+            start.setMilliseconds(0);
+
+            var end = new Date();
+            end.setTime(start.getTime());
+            end.setHours(end.getHours() + 1);
+
             self.selectedactivity = {
-                start: new Date(),
-                end: new Date()
+                start: start,
+                end: end
             };
         };
-        self.abortNewActivity = function() {
-            self.newactivity = false;
+        self.closeActivity = function() {
             self.selectedactivity = {};
         };
-        self.submitNewActivity = function() {
-            console.log('posting: ' + self.selectedactivity);
+        self.submitActivity = function() {
+            if (self.selectedactivity.id) {
+                self.selectedactivity.put().then(function() {
+                    self.reloadCalendar();
+                });
+            }
+            else {
+                eventEndpoint.post(self.selectedactivity).then(function() {
+                    self.reloadCalendar();
+                });
+            }
+        };
+        self.deleteActivity = function() {
+            if (self.selectedactivity.id) {
+                self.selectedactivity.remove().then(function() {
+                    self.reloadCalendar();
+                });
+            }
+            else {
+                self.resetSelection();
+            }
 
-            eventEndpoint.post(self.selectedactivity).then(function() {
-                uiCalendarConfig.calendars.caveroCalendar.fullCalendar('refetchEvents');
-                self.newactivity = false;
-                self.selectedactivity = {};
-            });
-        }
+        };
+        self.reloadCalendar = function() {
+            uiCalendarConfig.calendars.caveroCalendar.fullCalendar('refetchEvents');
+            self.resetSelection();
+        };
+        self.resetSelection = function() {
+            self.selectedactivity = {};
+        };
     }]);

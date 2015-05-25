@@ -49,13 +49,17 @@
         <div class="col-md-4">
             <div class="row">
                 <div class="col-md-12">
-                    <a class="btn btn-primary cav-newactivity-button" data-ng-click="ctrl.createNewActivity()" role="button" data-ng-show="!ctrl.newactivity">Nieuwe activiteit toevoegen</a>
+                    <a class="btn btn-primary cav-newactivity-button" data-ng-click="ctrl.createNewActivity()" role="button" data-ng-hide="ctrl.selectedactivity.start">Nieuwe activiteit toevoegen</a>
                 </div>
-                <div class="col-md-12" data-ng-show="ctrl.newactivity">
+                <div class="col-md-12" data-ng-show="ctrl.selectedactivity.start">
                     <div class="panel panel-primary">
-                        <div class="panel-heading">Nieuwe activiteit</div>
+                        <div class="panel-heading">
+                            <span data-ng-hide="ctrl.selectedactivity.id">Nieuwe activiteit</span>
+                            <span data-ng-show="ctrl.selectedactivity.id">Activiteit</span>
+                            <button type="button" class="close" aria-label="Close" data-ng-click="ctrl.closeActivity()"><span aria-hidden="true">&times;</span></button>
+                        </div>
                         <div class="panel-body">
-                            <form name="newactivityform" class="form-horizontal" data-ng-submit="ctrl.submitNewActivity()">
+                            <form name="newactivityform" class="form-horizontal" data-ng-submit="ctrl.submitActivity()">
                                 <div class="form-group">
                                     <label for="eventTitle" class="col-sm-4 control-label">Titel</label>
                                     <div class="col-sm-8">
@@ -85,36 +89,9 @@
 
                                 <div class="col-sm-offset-4 col-sm-8">
                                     <button type="submit" class="btn btn-primary">Opslaan</button>
-                                    <button type="button" class="btn btn-default" data-ng-click="ctrl.abortNewActivity()">Weggooien</button>
+                                    <button type="button" class="btn btn-danger" data-ng-click="ctrl.deleteActivity()">Verwijderen</button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12" data-ng-show="ctrl.selectedactivity.id && !ctrl.newactivity">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">Activiteit</div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-sm-5">Titel</div>
-                                <div class="col-sm-7">{{ctrl.selectedactivity.title}}</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-5">Startdatum</div>
-                                <div class="col-sm-7">{{ctrl.selectedactivity.start | date : 'dd-MM-yyyy HH:mm'}}</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-5">Einddatum</div>
-                                <div class="col-sm-7">{{ctrl.selectedactivity.end | date : 'dd-MM-yyyy HH:mm'}}</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-5">Beschrijving</div>
-                                <div class="col-sm-7">{{ctrl.selectedactivity.description}}</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-5">Locatie</div>
-                                <div class="col-sm-7">{{ctrl.selectedactivity.location}}</div>
-                            </div>
                         </div>
                     </div>
                 </div>
